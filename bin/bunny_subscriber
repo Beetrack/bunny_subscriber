@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'bunny_subscriber'
+
+begin
+  server = BunnySubscriber::Server.new(ARGV)
+  server.run
+rescue StandardError => e
+  warn e.message
+  warn e.backtrace.join("\n")
+  exit 1
+end
