@@ -1,8 +1,6 @@
 # BunnySubscriber
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/bunny_subscriber`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Simple RabbitMQ subscriber for ruby and rails applications using [Bunny](https://github.com/ruby-amqp/bunny). Heavily based on [Sneakers](https://github.com/jondot/sneakers), it provides a simple way to connect to RabbitMQ as a subscriber. But its goal is not to be a background job processing framework; just a subscriber to connect to other services that use RabbitMQ. For this reason `BunnySubscriber` does not provide a way to enqueue jobs, nor does it have scheduling jobs or retries with configurable times. If you want this features, `BunnySubscriber` works great with other background job processing tools, like `Sidekiq` or `Resque`. Or you can just use `Sneakers` directly.
 
 ## Installation
 
@@ -12,27 +10,87 @@ Add this line to your application's Gemfile:
 gem 'bunny_subscriber'
 ```
 
-And then execute:
+## Basic usage
 
-    $ bundle
+To add a consumer, just include the module `BunnySubscriber::Consumer`, and define the method `process_event`:
+```ruby
+class SomeConsumer
+  include BunnySubscriber::Consumer
 
-Or install it yourself as:
+  suscriber_options queue_name: 'some.rabbit.queue'
 
-    $ gem install bunny_subscriber
+    def process_event(message)
+      # Do some work
+    end
+  end
+end
+```
 
-## Usage
+To start the server, just run:
+```
+bundle exec bunny_subscriber
+```
 
-TODO: Write usage instructions here
+## Configuration
 
-## Development
+By default, `BunnySubscriber` loads the file `./config/bunny_subscriber.yml` for configurations. But that path can be specified on the command line as follows:
+```
+bundle exec bunny_subscriber -c some/path.yml
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+The options available in the yaml, by environment, are:
+```yml
+default: &default
+  host: 127.0.0.1
+  port: 5672
+  user: guest
+  pass: guest
+  vhost: /
+  heartbeat: 30
+  consumer_classes: 
+    - SomeConsumer
+development:
+  <<: *default
+  workers: 2
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+production:
+  <<: *default
+  host: some.host
+  vhost: /other
+  user: <%= ENV['user_in_env'] %>
+  pass: <%= ENV['password_in_env'] %>
+  workers: 5
+  daemonize: true
+```
+|Parameter name|Type|Description|Default|
+|---|---|---|---|
+|host|String|RabbitMQ host|127.0.0.1|
+|port|Integer|RabbitMQ port|5672|
+|user|String|RabbitMQ user|guest|
+|pass|String|RabbitMQ password|guest|
+|vhost|String|RabbitMQ virtual host|/|
+|heartbeat|Integer|Standard RabbitMQ server heartbeat||
+|workers|Integer|Number of process (not threads) that runs the server|1|
+|daemonize|Boolean|Run server in background or not|false|
+|logger_path|String|Logger output file when running as daemon|./log/bunny_subscriber.log|
+|pid_path|String|File that saves the current process master id|./pids/bunny_subscriber.pid|
+|boot_path|String|Path to a ruby script that initialize the environment. The default works for a Rails app|./config/environment|
+|consumer_classes|Array|Specified which consumers you want to consider|All defined consummers|
+
+## Command line options
+
+For all the command line options, run:
+```
+bundle exec bunny_subscriber --help
+```
+
+## Using without Rails
+
+By default, `BunnySubscriber` works with Rails. If you want to use it without Rails, or do not want to load the entire Rails environment (usefull if you want to create consumers that only enqueue jobs using other frameworks), just change the `boot_path` and load what you want in that script.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/bunny_subscriber.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Beetrack/bunny_subscriber.
 
 ## License
 

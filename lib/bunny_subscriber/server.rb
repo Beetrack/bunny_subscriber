@@ -70,24 +70,37 @@ module BunnySubscriber
 
     def options_parser(options)
       OptionParser.new do |opts|
-        opts.on '-c', '--config_path PATH', '' do |arg|
+        opts.banner = 'Usage: bundle exec bunny_subscriber [options]'
+
+        opts.on '-c', '--config_path PATH',
+                'Path to the configuration YAML file' do |arg|
           options[:config_path] = arg
         end
 
-        opts.on '-b', '--boot_script PATH', '' do |arg|
+        opts.on '-b', '--boot_script PATH',
+                'Path to a ruby script that initialize the environment' do |arg|
           options[:boot_path] = arg
         end
 
-        opts.on '-d', '--daemonize', '' do |_arg|
+        opts.on '-d', '--daemonize', 'Run server in background' do |_arg|
           options[:daemonize] = true
         end
 
-        opts.on '-C', '--consumers CONSUMER', '' do |arg|
+        opts.on '-C', '--consumers CONSUMERS',
+                'Specifies which consumers you want to consider. '\
+                'Comma separated values' do |arg|
           options[:consumer_classes] = arg.split(',')
         end
 
-        opts.on '-e', '--environment ENV', '' do |arg|
+        opts.on '-e', '--environment ENV',
+                'Specifies the environment to run the server under '\
+                '(test/development/production)' do |arg|
           options[:environment] = arg
+        end
+
+        opts.on '-h', '--help', 'This help text' do
+          puts opts
+          exit(0)
         end
       end
     end

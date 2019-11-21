@@ -1,4 +1,4 @@
-lib = File.expand_path("lib", __dir__)
+lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'bunny_subscriber/version'
 
@@ -9,7 +9,8 @@ Gem::Specification.new do |spec|
   spec.email         = ['jfcaiceo55@gmail.com']
 
   spec.summary       = 'Simple RabbitMQ subscriber for ruby using Bunny'
-  spec.description   = 'Simple RabbitMQ subscriber for ruby using Bunny'
+  spec.description   = 'Heavily based on Sneakers, it provides a simple way '\
+                       'to connect to RabbitMQ as a subscriber'
   spec.license       = 'MIT'
 
   spec.executables   = ['bunny_subscriber']
