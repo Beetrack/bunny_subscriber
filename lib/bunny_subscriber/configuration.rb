@@ -56,7 +56,7 @@ module BunnySubscriber
 
     def default_consumer_options
       {
-        boot_path: 'config/environment',
+        boot_path: 'config/environment.rb',
         consumer_classes: ::BunnySubscriber::Consumer::CLASSES
       }
     end
