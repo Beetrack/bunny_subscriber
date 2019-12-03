@@ -29,17 +29,17 @@ module BunnySubscriber
     private
 
     def create_queue(consumer)
-      if consumer.suscriber_options[:queue_name].nil?
+      if consumer.subscriber_options[:queue_name].nil?
         raise ArgumentError, '`queue_name` option is required'
       end
 
       options = { durable: true }
-      if (dl_exchange = consumer.suscriber_options[:dead_letter_exchange])
+      if (dl_exchange = consumer.subscriber_options[:dead_letter_exchange])
         options[:arguments] = { 'x-dead-letter-exchange': dl_exchange }
       end
 
       channel.queue(
-        consumer.suscriber_options[:queue_name], options
+        consumer.subscriber_options[:queue_name], options
       )
     end
   end

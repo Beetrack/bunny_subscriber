@@ -17,7 +17,7 @@ To add a consumer, just include the module `BunnySubscriber::Consumer`, and defi
 class SomeConsumer
   include BunnySubscriber::Consumer
 
-  suscriber_options queue_name: 'some.rabbit.queue'
+  subscriber_options queue_name: 'some.rabbit.queue'
 
     def process_event(message)
       # Do some work

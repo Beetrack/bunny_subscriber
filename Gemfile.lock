@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bunny_subscriber (1.0.0)
+    bunny_subscriber (1.0.1)
       bunny (~> 2.12)
       serverengine (~> 2.0.5)
 

@@ -12,7 +12,7 @@ module BunnySubscriber
     module ClassMethods
       attr_reader :subscriber_options_hash
 
-      def suscriber_options(opts = {})
+      def subscriber_options(opts = {})
         valid_keys = %i[queue_name dead_letter_exchange]
         valid_opts = opts.select { |key, _v| valid_keys.include? key }
         @subscriber_options_hash = valid_opts
@@ -55,10 +55,10 @@ module BunnySubscriber
     end
 
     def use_dead_letter_exchange?
-      !suscriber_options[:dead_letter_exchange].nil?
+      !subscriber_options[:dead_letter_exchange].nil?
     end
 
-    def suscriber_options
+    def subscriber_options
       self.class.subscriber_options_hash
     end
   end

@@ -5,27 +5,34 @@ class WorkerTest < Minitest::Test
   class FirstConsumer
     include BunnySubscriber::Consumer
 
-    suscriber_options queue_name: 'some.queue'
+    subscriber_options queue_name: 'some.queue'
   end
 
   class SecondConsumer
     include BunnySubscriber::Consumer
 
-    suscriber_options queue_name: 'some.queue'
+    subscriber_options queue_name: 'some.queue'
   end
 
   class DummyServerEngineFlag
+    attr_writer :set
+
+    def initialize
+      @set = true
+    end
+
     def set?
-      true
+      @set
     end
 
     def set!
-      true
+      @set = true
     end
   end
 
   class WorkerImpl
     include BunnySubscriber::Worker
+    attr_reader :stop_flag
 
     def initialize
       @stop_flag = DummyServerEngineFlag.new
@@ -102,6 +109,9 @@ class WorkerTest < Minitest::Test
   end
 
   def test_that_stop_call_stop_method_of_all_consumers
+    # Set flag to false to emulate normal flow
+    @worker.stop_flag.set = false
+
     mock_stop = MiniTest::Mock.new
     mock_stop.expect :call, nil
     new_consumer = FirstConsumer.new(nil, nil)
@@ -116,6 +126,9 @@ class WorkerTest < Minitest::Test
   end
 
   def test_that_stop_close_bunny_connection
+    # Set flag to false to emulate normal flow
+    @worker.stop_flag.set = false
+
     mock_close = MiniTest::Mock.new
     mock_close.expect :call, nil
     bunny_mock = BunnyMock.new

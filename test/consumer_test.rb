@@ -5,7 +5,7 @@ class ConsumerTestWithCorrectProccess < Minitest::Test
   class SimpleConsumer
     include BunnySubscriber::Consumer
 
-    suscriber_options queue_name: 'some.queue'
+    subscriber_options queue_name: 'some.queue'
 
     def process_event(msg)
       # Do some work
@@ -60,7 +60,7 @@ class ConsumerTestWithErrorProccess < Minitest::Test
   class ConsumerWithError
     include BunnySubscriber::Consumer
 
-    suscriber_options queue_name: 'some.other.queue'
+    subscriber_options queue_name: 'some.other.queue'
 
     def process_event(_msg)
       raise StandardError, ''
@@ -95,7 +95,7 @@ class ConsumerTestWithErrorProccessDeadLetterExchange < Minitest::Test
   class ConsumerWithErrorDeadLetterExchange
     include BunnySubscriber::Consumer
 
-    suscriber_options queue_name: 'some.other.queue',
+    subscriber_options queue_name: 'some.other.queue',
                       dead_letter_exchange: 'some-exchange'
 
     def process_event(_msg)
