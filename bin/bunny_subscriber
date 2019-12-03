@@ -4,7 +4,8 @@ require 'bundler/setup'
 require 'bunny_subscriber'
 
 begin
-  server = BunnySubscriber::Server.new(ARGV)
+  server = BunnySubscriber::Server.new
+  server.configure_and_boot_environment(ARGV)
   server.run
 rescue StandardError => e
   warn e.message

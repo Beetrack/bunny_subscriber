@@ -1,24 +1,34 @@
 module BunnySubscriber
   class Queue
-    attr_reader :connection
+    attr_reader :channel, :queue_consummer
 
-    def initialize(connection)
-      @connection = connection
+    def initialize(channel)
+      @channel = channel
     end
 
     def subscribe(consumer)
-      channel = @connection.create_channel
-      queue = create_queue(channel, consumer)
-      queue.subscribe(manual_ack: true, block: false) do |delivery_info, properties, payload|
+      queue = create_queue(consumer)
+      @queue_consummer = queue.subscribe(
+        manual_ack: true,
+        block: false
+      ) do |delivery_info, properties, payload|
         consumer.event_process_around_action(
-          channel, delivery_info, properties, payload
+          delivery_info, properties, payload
         )
       end
     end
 
+    def unsubscribe
+      return if @queue_consummer.cancel
+
+      # If can cancel the consumer, try again
+      sleep(1)
+      unsubscribe
+    end
+
     private
 
-    def create_queue(channel, consumer)
+    def create_queue(consumer)
       if consumer.suscriber_options[:queue_name].nil?
         raise ArgumentError, '`queue_name` option is required'
       end

@@ -5,7 +5,7 @@ require 'erb'
 
 module BunnySubscriber
   class Server
-    def initialize(argv)
+    def configure_and_boot_environment(argv)
       configure_options(argv)
       run_boot_script
     end
@@ -18,7 +18,8 @@ module BunnySubscriber
         log: server_options.daemonize ? server_options.logger_path : '-',
         pid_path: server_options.pid_path,
         worker_type: 'process',
-        workers: server_options.workers
+        workers: server_options.workers,
+        supervisor: true
       )
       server.run
     end

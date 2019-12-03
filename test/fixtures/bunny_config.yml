@@ -1,0 +1,11 @@
+default: &default
+  host: some.host
+  port: 5672
+  user: some_user
+  pass: some_pass
+  vhost: /
+  heartbeat: 30
+development:
+  <<: *default
+production:
+  <<: *default

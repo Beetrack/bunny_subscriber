@@ -19,12 +19,12 @@ module BunnySubscriber
       end
     end
 
-    attr_reader :queue, :connection
+    attr_reader :queue, :channel
 
-    def initialize(connection, logger)
-      @connection = connection
+    def initialize(channel, logger)
+      @channel = channel
       @logger = logger
-      @queue = Queue.new(connection)
+      @queue = Queue.new(channel)
     end
 
     def process_event(_msg)
@@ -34,9 +34,14 @@ module BunnySubscriber
 
     def start
       queue.subscribe(self)
+      @logger.info "Start running consumer #{self.class}"
     end
 
-    def event_process_around_action(channel, delivery_info, properties, payload)
+    def stop
+      queue.unsubscribe
+    end
+
+    def event_process_around_action(delivery_info, properties, payload)
       @logger.info "#{self.class} #{properties.message_id} start"
       time = Time.now
 
