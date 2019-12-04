@@ -56,7 +56,11 @@ module BunnySubscriber
 
     def process_config_file(path)
       file_options = load_config_file(path)
-      file_options[Configuration.instance.environment.to_sym]
+      env_options = file_options[Configuration.instance.environment.to_s]
+      env_options.keys.each do |key|
+        env_options[key.to_sym] = env_options.delete(key)
+      end
+      env_options
     end
 
     def load_config_file(path)
@@ -66,7 +70,7 @@ module BunnySubscriber
       end
 
       yml_string = ERB.new(File.read(path)).result
-      YAML.safe_load(yml_string, [], [], true, [], symbolize_names: true)
+      YAML.safe_load(yml_string, [], [], true, [])
     end
 
     def options_parser(options)
