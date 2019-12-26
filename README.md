@@ -1,6 +1,6 @@
 # BunnySubscriber
 
-Simple RabbitMQ subscriber for ruby and rails applications using [Bunny](https://github.com/ruby-amqp/bunny). Heavily based on [Sneakers](https://github.com/jondot/sneakers), it provides a simple way to connect to RabbitMQ as a subscriber. But its goal is not to be a background job processing framework; just a subscriber to connect to other services that use RabbitMQ. For this reason `BunnySubscriber` does not provide a way to enqueue jobs, nor does it have scheduling jobs or retries with configurable times. If you want this features, `BunnySubscriber` works great with other background job processing tools, like `Sidekiq` or `Resque`. Or you can just use `Sneakers` directly.
+Simple RabbitMQ subscriber for ruby and rails applications using [Bunny](https://github.com/ruby-amqp/bunny). Heavily inspired by [Sneakers](https://github.com/jondot/sneakers), it provides a simple way to connect to RabbitMQ as a subscriber. But its goal is not to be a background job processing framework; just a subscriber to connect to other services that use RabbitMQ. For this reason `BunnySubscriber` does not provide a way to enqueue jobs, nor does it have scheduling jobs or retries with configurable times. If you want this features, `BunnySubscriber` works great with other background job processing tools, like `Sidekiq` or `Resque`. Or you can just use `Sneakers` directly.
 
 ## Installation
 
@@ -19,9 +19,8 @@ class SomeConsumer
 
   subscriber_options queue_name: 'some.rabbit.queue'
 
-    def process_event(message)
-      # Do some work
-    end
+  def process_event(message)
+    # Do some work
   end
 end
 ```
