@@ -70,7 +70,7 @@ module BunnySubscriber
       end
 
       yml_string = ERB.new(File.read(path)).result
-      YAML.safe_load(yml_string, [], [], true, [])
+      YAML.safe_load(yml_string, permitted_classes: [], permitted_symbols: [], aliases: true)
     end
 
     def options_parser(options)
